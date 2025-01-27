@@ -1,32 +1,21 @@
-import matplotlib.pyplot as plt
 import numpy as np
-from scipy.integrate import quad
+import matplotlib.pyplot as plt
+import scipy.integrate as spi
 
-# Визначення функції та межі інтегрування
+# Визначте функцію, яку потрібно інтегрувати, наприклад, f(x) = x^2
 def f(x):
-    return x ** 2
+    return x**2
 
-a = 0  # Нижня межа
-b = 2  # Верхня межа
+# Визначте межі інтегрування, наприклад, від 0 до 2
+a = 0  # нижня межа
+b = 2  # верхня межа
 
-# Створення діапазону значень для x
-x = np.linspace(-0.5, 2.5, 400)
+# Побудова графіка функції
+x = np.linspace(a, b, 400)
 y = f(x)
 
-# Створення графіка
 fig, ax = plt.subplots()
-
-# Малювання функції
 ax.plot(x, y, 'r', linewidth=2)
-
-# Заповнення області під кривою
-ix = np.linspace(a, b)
-iy = f(ix)
-ax.fill_between(ix, iy, color='gray', alpha=0.3)
-
-# Налаштування графіка
-ax.set_xlim([x[0], x[-1]])
-ax.set_ylim([0, max(y) + 0.1])
 ax.set_xlabel('x')
 ax.set_ylabel('f(x)')
 
@@ -47,33 +36,12 @@ integral_mc = (b - a) * max(y) * np.sum(under_curve) / N
 
 print(f"Значення інтегралу методом Монте-Карло: {integral_mc}")
 
-# Аналітичне обчислення інтегралу
+# Аналітичний метод за допомогою функції quad
+result_quad, error = spi.quad(f, a, b)
+print(f"Аналітичний метод (quad): {result_quad} з похибкою {error}")
 
-integral_analytical, _ = quad(f, a, b)
-print(f"Аналітичне значення інтегралу: {integral_analytical}")
-
-# Висновки
-error = abs(integral_mc - integral_analytical)
-print(f"Похибка методу Монте-Карло: {error}")
-# Перевірка результатів
-if np.isclose(integral_mc, integral_analytical, rtol=1e-2):
+# Порівняння результатів
+if np.isclose(integral_mc, result_quad, rtol=1e-2):
     print("Метод Монте-Карло дає результат, близький до аналітичного.")
 else:
     print("Метод Монте-Карло не збігається з аналітичним результатом.")
-
-    import scipy.integrate as spi
-
-    # Визначте функцію, яку потрібно інтегрувати, наприклад, f(x) = x^2
-    def f(x):
-        return x**2
-
-    # Визначте межі інтегрування, наприклад, від 0 до 1
-    a = 0  # нижня межа
-    b = 2  # верхня межа
-
-    # Обчислення інтеграла
-    result, error = spi.quad(f, a, b)
-
-    print("Інтеграл: ", result, error)
-
-    
